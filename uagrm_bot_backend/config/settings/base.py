@@ -23,8 +23,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'rest_framework',
-    'rest_framework_api_key',
-    'rest_framework.authtoken',
     'apps.authentication',
     'apps.chatbot',
     'apps.institutional',
@@ -34,8 +32,8 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -94,7 +92,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY_CUSTOM"
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",

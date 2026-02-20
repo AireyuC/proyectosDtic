@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework_api_key.permissions import HasAPIKey
+from rest_framework.permissions import IsAuthenticated
 from django.core.files.storage import default_storage
 import os
 
@@ -12,9 +12,9 @@ from apps.chatbot.services.ai_handler import procesar_mensaje
 from apps.institutional.models import UploadedDocument
 from apps.institutional.services.ingestion import process_pdf
 
-# Solo pasara quien tenga una ApiKey valida
+# Solo pasara quien este autenticado (sesión de usuario)
 class SecureUploadView(APIView):
-    permission_classes = [HasAPIKey]
+    permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, format=None):

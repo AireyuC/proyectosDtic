@@ -72,7 +72,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://web:8000/api/chat/post/",
+        "url": "http://backend:8000/api/chat/post/",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
