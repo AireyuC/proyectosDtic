@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from pgvector.django import VectorField, HnswIndex
+import os
 
 class UploadedDocument(models.Model):
     STATUS_CHOICES = [

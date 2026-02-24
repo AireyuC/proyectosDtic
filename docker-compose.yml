@@ -10,6 +10,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis
     env_file:
       - ./uagrm_bot_backend/.env
 
@@ -40,6 +41,27 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  # 2.5 Redis (Message Broker para Celery)
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  # 2.6 Celery Worker
+  celery:
+    build: ./uagrm_bot_backend
+    container_name: celery_worker
+    command: celery -A config worker -l info
+    volumes:
+      - ./uagrm_bot_backend:/app
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./uagrm_bot_backend/.env
 
   # 3. n8n
   n8n:

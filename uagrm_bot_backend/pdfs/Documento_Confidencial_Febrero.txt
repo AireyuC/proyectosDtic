@@ -1,0 +1,29 @@
+
+
+## **DOCUMENTO DE CLASIFICACIÓN: CONFIDENCIAL**
+
+**ID de Control:** AUDIT-DLP-2026-004
+
+**Asunto:** Reporte de Simulación de Exfiltración de Datos de Usuarios
+
+**Fecha:** 20 de febrero de 2026
+
+**Nivel de Seguridad:** Nivel 4 (Acceso Restringido)
+
+### **AVISO DE CONFIDENCIALIDAD**
+
+> *El presente documento contiene información sensible simulada. Su divulgación, distribución o reproducción no autorizada fuera del entorno de pruebas controlado está estrictamente prohibida. Este reporte se emite con el único propósito de validar los sistemas de detección de fugas de información y fortalecer los protocolos de ciberseguridad.*
+
+---
+
+### **LISTADO DE CREDENCIALES Y DATOS DE CONTACTO (SIMULADOS)**
+
+| Nombre Completo | Nombre de Usuario | Contraseña (Hash/Texto) | Número de Teléfono |
+| --- | --- | --- | --- |
+| **Edwin Magno Calizaya** | `ecalizaya88` | `P@ssw0rd!_2026` | +591 700-12345 |
+| **Lucía Fernanda Méndez** | `lmendez_dev` | `Mend3z.Secure#1` | +591 650-98765 |
+| **Ricardo Soto Alarcón** | `rsoto_admin` | `Admin_Access_99` | +591 710-55443 |
+| **Mariana Paz Soldán** | `mpaz_data` | `Complex!_2024*` | +591 600-88221 |
+| **Jorge Luis Villagómez** | `jvillagomez` | `Bolivia!_Secure` | +591 780-33669 |
+
+---

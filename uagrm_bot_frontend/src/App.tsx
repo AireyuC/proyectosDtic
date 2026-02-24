@@ -3,6 +3,7 @@ import { Login } from './pages/Login';
 import { PublicChat } from './pages/PublicChat';
 import { Unauthorized } from './pages/Unauthorized';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { MassiveMessagingDashboard } from './features/massiveMessaging/components/MassiveMessagingDashboard';
 import { UploaderDashboard } from './pages/uploader/UploaderDashboard';
 import { VerifierDashboard } from './pages/verifier/VerifierDashboard';
 import { DashboardLayout } from './layouts/DashboardLayout';
@@ -25,6 +26,7 @@ function App() {
             {/* Admin Routes */}
             <Route element={<ProtectedRoute allowedRoles={['Admin']} />}>
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/massive-messaging" element={<MassiveMessagingDashboard />} />
             </Route>
 
             {/* Verifier Routes */}
