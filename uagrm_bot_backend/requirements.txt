@@ -12,3 +12,4 @@ llama-index
 llama-parse
 nest_asyncio
 django-cors-headers
+requests
