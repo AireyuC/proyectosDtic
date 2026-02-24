@@ -13,9 +13,14 @@ export default defineConfig({
   server: {
     watch: {
       usePolling: true,
+      interval: 1000, // Poll cada segundo para detectar cambios más rápido
     },
     host: true, // Esto es vital para Docker
     strictPort: true,
     port: 5173,
+    hmr: {
+      host: 'localhost',
+      port: 5173,
+    },
   }
 })
