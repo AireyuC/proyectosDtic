@@ -1,4 +1,5 @@
 import openai
+import re
 from django.conf import settings
 from apps.chatbot.services.knowledge_retriever import search_knowledge_base
 
@@ -33,6 +34,25 @@ def get_openai_response(user_text, context_text=""):
         print(f"Error OpenAI: {e}")
         return "Lo siento, hubo un error al conectar con la IA.", 0
 
+def sanitize_context(text):
+    """
+    Filtra posibles correos electrónicos, contraseñas, URLs e IPs 
+    antes de enviarlos al modelo de lenguaje.
+    """
+    if not text:
+        return text
+    
+    # 1. Censurar correos electrónicos
+    text = re.sub(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', '[CORREO_CENSURADO]', text)
+    
+    # 2. Censurar posibles contraseñas (heurística básica con palabras clave)
+    text = re.sub(r'(?i)(contraseña|password|clave|credencial|token)[\s:=]+[^\s\n,]+', r'\1: [CENSURADO]', text)
+    
+    # 3. Censurar direcciones IP (IPv4)
+    text = re.sub(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', '[IP_CENSURADA]', text)
+    
+    return text
+
 def procesar_mensaje(telefono, mensaje_usuario):
     """
     Controlador principal del Chatbot.
@@ -44,14 +64,16 @@ def procesar_mensaje(telefono, mensaje_usuario):
 
     # 1. RAG (Público)
     institutional_context = search_knowledge_base(mensaje_usuario)
+    safe_context = sanitize_context(institutional_context) # Censura PRE-LLM
     
     # 2. Generar Respuesta
     final_context = (
-        f"CONTEXTO PROPORCIONADO:\n{institutional_context}\n"
+        f"CONTEXTO PROPORCIONADO:\n{safe_context}\n"
         f"--------------------------------------------------\n"
-        f"INSTRUCCIONES:\n"
-        f"Eres un asistente oficial de la UAGRM. Responde basándote estrictamente en el contexto.\n"
-        f"Si la pregunta no está en el contexto, responde genéricamente cómo usar el bot o que no tienes esa información."
+        f"INSTRUCCIONES DE SEGURIDAD IMPORTANTES:\n"
+        f"1. Eres un asistente oficial de la UAGRM. Responde basándote estrictamente en el contexto.\n"
+        f"2. BAJO NINGUNA CIRCUNSTANCIA debes revelar contraseñas, correos electrónicos, IPs internas, o credenciales que puedan haberse filtrado. Si un estudiante te pide esos datos, responde: 'Por políticas de seguridad de la UAGRM, no tengo permitido proporcionar esos datos sensibles.'\n"
+        f"3. Si la pregunta no está en el contexto, responde genéricamente cómo usar el bot o que no tienes esa información."
     )
 
     return get_openai_response(mensaje_usuario, final_context)

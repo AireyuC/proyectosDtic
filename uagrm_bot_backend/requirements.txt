@@ -1,6 +1,9 @@
 django
 djangorestframework
 drf-yasg
+python-docx==0.8.11
+celery==5.6.1
+redis==7.1.0
 python-dotenv
 psycopg2-binary
 openai
@@ -8,5 +11,4 @@ pgvector
 llama-index
 llama-parse
 nest_asyncio
-djangorestframework-api-key
 django-cors-headers

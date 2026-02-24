@@ -18,12 +18,24 @@ openai.api_key = settings.OPENAI_API_KEY
 
 def sanitize_text(text):
     """
-    Elimina/Enmascara datos sensibles (emails, teléfonos) del texto.
+    Elimina/Enmascara datos sensibles (emails, teléfonos, IPs, contraseñas) del texto de forma proactiva.
+    Se ejecuta ANTES de que el texto se guarde en la Base de Datos.
     """
-    # Email simple regex
-    text = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '[EMAIL_PROTECTED]', text)
-    # Teléfonos (celebramos números de 8 a 15 dígitos como posibles teléfonos)
-    text = re.sub(r'\b\d{8,15}\b', '[PHONE_REDACTED]', text)
+    if not text:
+        return text
+        
+    # 1. Censurar correos electrónicos
+    text = re.sub(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', '[CORREO_CENSURADO]', text)
+    
+    # 2. Censurar posibles contraseñas (heurística básica con palabras clave)
+    text = re.sub(r'(?i)(contraseña|password|clave|credencial|token)[\s:=]+[^\s\n,]+', r'\1: [CENSURADO]', text)
+    
+    # 3. Censurar direcciones IP (IPv4)
+    text = re.sub(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', '[IP_CENSURADA]', text)
+    
+    # 4. Teléfonos (celebramos números de 8 a 15 dígitos como posibles teléfonos)
+    text = re.sub(r'\b\d{8,15}\b', '[TELEFONO_CENSURADO]', text)
+    
     return text
 
 def get_embedding(text):

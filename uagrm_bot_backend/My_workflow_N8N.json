@@ -1,5 +1,5 @@
 {
-  "name": "My workflow",
+  "name": "Botsito uagrm - Single Webhook Strategy",
   "nodes": [
     {
       "parameters": {
@@ -20,6 +20,39 @@
     },
     {
       "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "massive_broadcast_check",
+              "leftValue": "={{ $json.body.type }}",
+              "rightValue": "massive_broadcast",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -100,
+        0
+      ],
+      "id": "router-if",
+      "name": "Router: Is Massive?"
+    },
+    {
+      "parameters": {
         "respondWith": "text",
         "responseBody": "OK",
         "options": {
@@ -29,11 +62,11 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -80,
-        0
+        120,
+        -140
       ],
       "id": "9098cfeb-e53b-4afa-83b8-11589cb64b9d",
-      "name": "Respond to Webhook"
+      "name": "Respond to Webhook (Bot)"
     },
     {
       "parameters": {
@@ -63,26 +96,26 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        128,
-        0
+        320,
+        -140
       ],
       "id": "47d57f7d-9887-42f3-9532-3d45a0eb54e5",
-      "name": "If"
+      "name": "If Message Received"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "http://web:8000/api/chat/post/",
+        "url": "http://backend:8000/api/chat/post/",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
             {
               "name": "message",
-              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].text.body }}"
+              "value": "={{ $node['Router: Is Massive?'].json.body.entry[0].changes[0].value.messages[0].text.body }}"
             },
             {
               "name": "phone",
-              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].from }}"
+              "value": "={{ $node['Router: Is Massive?'].json.body.entry[0].changes[0].value.messages[0].from }}"
             }
           ]
         },
@@ -91,11 +124,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        336,
-        -96
+        520,
+        -140
       ],
       "id": "a12dddf5-5787-429c-a43b-35bf5d2f114f",
-      "name": "HTTP Request"
+      "name": "HTTP Request (Django AI)"
     },
     {
       "parameters": {
@@ -112,17 +145,76 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $node['Webhook'].json.body.entry[0].changes[0].value.messages[0].from }}\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($json.response) }}\n  }\n}",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $node['Router: Is Massive?'].json.body.entry[0].changes[0].value.messages[0].from }}\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($json.response) }}\n  }\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        544,
-        -96
+        720,
+        -140
       ],
       "id": "b609a0a9-7762-4d4a-85bd-0c4f0aa6df43",
-      "name": "HTTP Request1"
+      "name": "HTTP Request AWS Whatsapp (Bot)"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"queued\"\n}",
+        "options": {
+          "responseCode": 202
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        120,
+        180
+      ],
+      "id": "respond-massive",
+      "name": "Respond to Webhook (Massive)"
+    },
+    {
+      "parameters": {
+        "operation": "splitOutItems",
+        "fieldToSplitOut": "body.students",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        320,
+        180
+      ],
+      "id": "split-massive",
+      "name": "Split Students"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v24.0/942146848979874/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAiqbruKKUIBQm2vj2lJuujVuAVxfPJGM7ONndeSeKBTrFbabiLU2SGxtd4cn3ZBN5HUNOGw9Dz6QjoNMYJAreCelBXbZBVk55zjXUxCxIaCeBmSgZC10ZBFuJ7vNIUbwArT49bqfhIXmLoZAMzvHw82kZB3hoTdhZCpTL1KZBvwkBS3ZAdRvq6eJnX6ixiiZA6ayNcMKhxXZBUbRuh3XWsRc9GKd8QVfTIRsTYPNwlYGXJ9PMDN4mIgjM7OTgC5USnSkFce9ZBONMNs3ueE3vW8pMqY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.phone_number }}\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($('Webhook').first().json.body.message) }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        520,
+        180
+      ],
+      "id": "http-massive",
+      "name": "HTTP Request AWS Whatsapp (Massive)"
     }
   ],
   "pinData": {},
@@ -131,40 +223,80 @@
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Router: Is Massive?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Respond to Webhook": {
+    "Router: Is Massive?": {
       "main": [
         [
           {
-            "node": "If",
+            "node": "Respond to Webhook (Massive)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook (Bot)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If": {
+    "Respond to Webhook (Bot)": {
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "If Message Received",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "HTTP Request": {
+    "If Message Received": {
       "main": [
         [
           {
-            "node": "HTTP Request1",
+            "node": "HTTP Request (Django AI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request (Django AI)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request AWS Whatsapp (Bot)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook (Massive)": {
+      "main": [
+        [
+          {
+            "node": "Split Students",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Students": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request AWS Whatsapp (Massive)",
             "type": "main",
             "index": 0
           }

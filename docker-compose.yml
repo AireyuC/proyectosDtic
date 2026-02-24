@@ -1,42 +1,27 @@
-# services:
-#   db:
-#     image: pgvector/pgvector:pg16 # <--- ¡La imagen mágica con vector incluido!
-#     container_name: uagrm_bot_db
-#     restart: always
-#     environment:
-#       - POSTGRES_DB=uagrm_bot_db
-#       - POSTGRES_USER=postgres
-#       - POSTGRES_PASSWORD=postgres
-#     ports:
-#       - "5432:5432"
-#     volumes:
-#       - postgres_data:/var/lib/postgresql/data
-#
-# volumes:
-#   postgres_data:
-# #
-
 services:
-  # 1. Tu Backend Django (App)
-  web:
-    build: .
+  # 1. Backend Django (App)
+  backend:
+    build: ./uagrm_bot_backend
+    container_name: backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/app
+      - ./uagrm_bot_backend:/app
     ports:
       - "8000:8000"
     depends_on:
       - db
+      - redis
     env_file:
-      - .env
+      - ./uagrm_bot_backend/.env
 
   # 1.5 Frontend React
   frontend:
     build:
-      context: ../uagrm_bot_frontend
+      context: ./uagrm_bot_frontend
       dockerfile: Dockerfile
+    container_name: frontend
     volumes:
-      - ../uagrm_bot_frontend:/app
+      - ./uagrm_bot_frontend:/app
       - /app/node_modules
     ports:
       - "5173:5173"
@@ -46,7 +31,7 @@ services:
   # 2. Base de Datos (Con pgvector)
   db:
     image: pgvector/pgvector:pg16
-    container_name: uagrm_bot_db
+    container_name: db
     restart: always
     environment:
       - POSTGRES_DB=uagrm_bot_db
@@ -56,6 +41,27 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  # 2.5 Redis (Message Broker para Celery)
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  # 2.6 Celery Worker
+  celery:
+    build: ./uagrm_bot_backend
+    container_name: celery_worker
+    command: celery -A config worker -l info
+    volumes:
+      - ./uagrm_bot_backend:/app
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./uagrm_bot_backend/.env
 
   # 3. n8n
   n8n:
@@ -73,4 +79,4 @@ services:
 
 volumes:
   postgres_data:
-  n8n_data: # <--- Importante: El volumen persistente para n8n
+  n8n_data:

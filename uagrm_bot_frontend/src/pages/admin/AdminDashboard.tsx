@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '@/config/axios';
 
 export const AdminDashboard = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -55,7 +57,18 @@ export const AdminDashboard = () => {
 
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+                <button
+                    onClick={() => navigate('/admin/massive-messaging')}
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 shadow flex items-center gap-2"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clipRule="evenodd" />
+                    </svg>
+                    Mensajería Masiva
+                </button>
+            </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md max-w-md">
                 <h2 className="text-xl mb-4">Create New User</h2>
