@@ -1,8 +1,7 @@
 from celery import shared_task
 import requests
 import os
-from django.conf import settings
-from apps.massive_messaging.models import MockFaculty, MockCareer, MockStudent, BroadcastMessage
+from apps.massive_messaging.models import MockStudent, BroadcastMessage
 
 # Meta only allows one webhook, so we use the SAME n8n webhook for incoming and outgoing.
 N8N_MAIN_WEBHOOK_URL = os.getenv('N8N_WEBHOOK_URL', 'http://n8n:5678/webhook/whatsapp')

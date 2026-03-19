@@ -1,4 +1,3 @@
-from django.db.models import Q
 from pgvector.django import CosineDistance
 
 from apps.institutional.models import DocumentChunk

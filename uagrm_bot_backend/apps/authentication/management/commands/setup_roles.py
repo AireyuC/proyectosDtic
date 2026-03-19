@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Group
 
 class Command(BaseCommand):
     help = 'Creates default groups and permissions for the different dashboards'

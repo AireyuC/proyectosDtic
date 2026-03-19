@@ -1,7 +1,6 @@
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Q
 from apps.institutional.models import UploadedDocument
 from apps.institutional.services.ingestion import process_pdf
 from .serializers import DocumentUploadSerializer, DocumentSerializer, DocumentVerificationSerializer
