@@ -15,10 +15,15 @@ Allí encontrarás la metodología Feature-Based implementada, y el manejo del c
 *(Nota: Archivos legacy como ESTRUCTURA_FRONTEND.md y documentación estática de Vite fueron reemplazadas y consolidadas).*
 
 ## 🚀 Desarrollo Rápido
-```bash
-# Instalación
-npm install
 
-# Correr entorno
-npm run dev
+El despliegue y validación del frontend están completamente orquestados por Docker, por lo que no es necesario correr `npm run dev` localmente si se utiliza el stack estándar.
+
+```bash
+# Navegar a la raíz del repositorio
+cd ../
+
+# Hacer build o levantar de nuevo la infraestructura general que incluye al Frontend
+docker-compose up -d --build
 ```
+
+*(El contenedor expone el servicio Frontend automáticamente de manera correcta)*

@@ -1,6 +1,10 @@
 # Arquitectura y Estructura del Frontend (UAGRM Bot)
 
-El frontend es el panel administrativo e interfaz web adicional del sistema UAGRM Bot, construido bajo un esquema de "Feature-Based Architecture" para garantizar aislamiento de componentes y una escalabilidad sólida conforme el backend crece.
+> [!WARNING] 
+> **⚠️ ESTADO ACTUAL: INCOMPLETO Y PARALIZADO**
+> El desarrollo de este frontend se encuentra actualmente inconcluso o "a medias". Cuenta con funciones redundantes y secciones que se quedaron en fase de desarrollo. Debido a este estancamiento, es preferible **rehacerlo desde cero** en el futuro. Todo este documento sirve puramente como contexto del avance y esquema histórico de lo que se pretendía implementar.
+
+El frontend (en su diseño conceptual) es el panel administrativo e interfaz web adicional del sistema UAGRM Bot, construido bajo un esquema de "Feature-Based Architecture" para garantizar aislamiento de componentes y una escalabilidad sólida conforme el backend crece.
 
 ## 🛠 Tech Stack Core
 - **Framework**: React 18 + Vite + TypeScript.
@@ -20,21 +24,28 @@ uagrm_bot_frontend/
 ├── 📂 src/
 │   ├── 📂 assets/            # Imágenes, logotipos
 │   ├── 📂 components/        # Componentes Reutilizables y Globales
+│   │   ├── Layout.tsx         # Layout general de la aplicación (Sidebar/Navbar Full Width)
 │   │   ├── ProtectedRoute.tsx # 🛡️ Bloquea rutas basándose en roles de usuario
-│   │   └── TestChatBubble.tsx # 💬 Widget flotante para testear el bot en vivo
+│   │   ├── TestChatBubble.tsx # 💬 Widget flotante para testear el bot en vivo
+│   │   ├── 📂 admin/          # Componentes aislados para uso en vistas de administrador
+│   │   ├── 📂 uploader/       # Componentes aislados para subida de archivos
+│   │   └── 📂 verifier/       # Componentes aislados para flujo de verificación
 │   │
 │   ├── 📂 config/            
 │   │   └── axios.ts          # Cliente HTTP global (inyecta JWT/Bearer Token)
 │   │
 │   ├── 📂 features/          # Dominio Céntrico de la App
 │   │   ├── 📂 auth/          # Servicios y tipos de validación (authService, Login Types)
-│   │   └── 📂 chat/          # Servicios y utilidades de consumo del RAG (chatService)
+│   │   ├── 📂 chat/          # Servicios y utilidades de consumo del RAG (chatService)
+│   │   ├── 📂 institutional/ # Gestión y carga de documentos institucionales (Servicios API)
+│   │   └── 📂 massiveMessaging/# Control e interfaces para envíos remotos masivos
 │   │
 │   ├── 📂 hooks/             
 │   │   └── useAuth.ts        # Context hook para determinar el rol del usuario logueado en cualquier vista
 │   │
-│   ├── 📂 layouts/
-│   │   └── DashboardLayout.tsx # Sidebars y Navbar adaptables a pantallas grandes (Full Width Layout)
+│   ├── 📂 layouts/           # Contenedores estructurales de página (ej. DashboardLayout)
+│   ├── 📂 modules/           # Módulos encapsulados que combinan componentes y lógica de negocio
+│   ├── 📂 utils/             # Funciones de ayuda y utilidades generales (helpers)
 │   │
 │   ├── 📂 pages/             # Vistas por Ruta
 │   │   ├── Login.tsx         # Pantalla principal de Acceso

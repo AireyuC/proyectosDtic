@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'uagrm_bot_db'),      # Antes decía 'db_chatBot'
-        'USER': os.getenv('DB_USER', 'postgres'),          # Antes decía 'uagrm_admin'
-        'PASSWORD': os.getenv('DB_PASSWORD', 'postgres'),  # Antes decía 'bot123'
+        'NAME': os.getenv('DB_NAME', 'uagrm_bot_db'),      
+        'USER': os.getenv('DB_USER', 'postgres'),          
+        'PASSWORD': os.getenv('DB_PASSWORD', 'postgres'),  
         'HOST': os.getenv('DB_HOST', 'db'),
         'PORT': os.getenv('DB_PORT', '5432'),
     }
